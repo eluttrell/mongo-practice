@@ -55,19 +55,90 @@ db.languages.find({
   ]
 }).pretty()
 // Find all object-oriented programming languages that use duck-typing.
+db.languages.find({
+  typingDiscipline:/duck.*/i,
+  Paradigms:/object-oriented.*/i
+}).pretty()
 // Find all functional programming languages that are also object-oriented.
+db.languages.find({
+  $and: [
+    {
+      Paradigms:/functional.*/i
+    },
+    {
+      Paradigms:/object-oriented.*/i
+    }
+  ]
+}).pretty()
+
+
 // Update
 //
 // The information for Haskell is missing some data, it should actually be:
 //
 // Language: Haskell Inventor(s): Lennart Augustsson, Dave Barton, Brian Boutel, Warren Burton, Joseph Fasel, Kevin Hammond, Ralf Hinze, Paul Hudak, John Hughes, Thomas Johnsson, Mark Jones, Simon Peyton Jones, John Launchbury, Erik Meijer, John Peterson, Alastair Reid, Colin Runciman, Philip Wadler First appeared: 1990 Paradigm(s): functional, imperative, lazy/non-strict, modular Typing discipline: static, strong, inferred
-//
+var haskellUpdate = {
+  Inventor: 'Lennart Augustsson, Dave Barton, Brian Boutel, Warren Burton, Joseph Fasel, Kevin Hammond, Ralf Hinze, Paul Hudak, John Hughes, Thomas Johnsson, Mark Jones, Simon Peyton Jones, John Launchbury, Erik Meijer, John Peterson, Alastair Reid, Colin Runciman, Philip Wadler',
+  firstAppeared: 1990,
+  Paradigms: 'functional, imperative, lazy/non-strict, modular',
+  typingDiscipline: 'static, strong, inferred'
+}
+db.languages.update({
+  Language: 'Haskell',
+}, {
+  $set: haskellUpdate
+}, {
+  upsert: true
+});
+
+
 // The above data actually had a couple of factual mistakes. Write an update statement with the $set statement to fix them:
 //
 // Brandon Eich is actually spelled "Brendan Eich".
+var brendanUpdate = {
+  Inventor: 'Brendan Eich'
+};
+
+db.languages.update({
+  Language: 'JavaScript'
+}, {
+  $set: brendanUpdate
+});
+
+db.languages.find({
+  Inventor:/Brendan Eich.*/i
+}).pretty()
 // The Closure programming language is actually spelled "Clojure".
+var clojureUpdate = {
+  Language: 'Clojure'
+};
+
+db.languages.update({
+  Language: 'Closure'
+}, {
+  $set: clojureUpdate
+});
+
+db.languages.find({
+  Language:/Clojure.*/i
+}).pretty()
+
 // Upsert
 //
 // You want to insert a programming language, but you don't want to accidentally insert a duplicate. Write an update statement with the upsert flag, so that this document will be created if it doesn't already exist, but re-running this statement won't create a duplicate (another with the same name). The programming language is:
 //
 // Language: Elm Inventor(s): Evan Czaplicki First appeared: 2012 Typing discipline: static, strong, inferred
+var elm = {
+  Language: 'Elm',
+  Inventor: 'Evan Czaplicki',
+  firstAppeared: 2012,
+  typingDiscipline: 'static, strong, inferred'
+};
+
+db.languages.update({
+  Language: 'Elm'
+}, {
+  $set: elm
+}, {
+  upsert: true
+});
