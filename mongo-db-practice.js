@@ -21,20 +21,39 @@ mongo my_database
 // Create Languages collection:
 db.createCollection('languages')
 
-
-
 // Find
 //
 // Find a programming language by its object ID.
+db.getCollection('languages').find({ _id: ObjectId("584ed211115080326291f122")})
 // Find all object-oriented programming languages.
+db.languages.find({ Paradigms:/object-oriented.*/i}).pretty()
 // Find all functional programming languages.
+db.languages.find({ Paradigms:/functional.*/i}).pretty()
 // Find all programming languages that have "duck-typing".
+db.languages.find({ typingDiscipline:/duck.*/i}).pretty()
 // Find all programming languages that have static-typing.
+db.languages.find({ typingDiscipline:/static.*/i}).pretty()
 // Find all programming languages with strong-typing.
+db.languages.find({ typingDiscipline:/strong.*/i}).pretty()
 // Find programming languages that are more that are more than 10 years old.
+db.languages.find({ firstAppeared: { $lt: 2006}}).pretty()
 // Find a programming language by name.
+db.languages.find({ Language:/python/i}).pretty()
 // Find all programming languages invented by Simon Peyton Jones.
+db.languages.find({ Inventor:/Simon Peyton Jones.*/i}).pretty()
+db.languages.find({ Inventor:/Simon.*/i}).pretty()
 // Find all object-oriented programming languages created in the 90s.
+db.languages.find({
+  Paradigms:/object-oriented.*/i,
+  $and: [
+    {
+      firstAppeared: { $gt: 1989 }
+    },
+    {
+      firstAppeared: { $lt: 2000 }
+    }
+  ]
+}).pretty()
 // Find all object-oriented programming languages that use duck-typing.
 // Find all functional programming languages that are also object-oriented.
 // Update
